@@ -61,6 +61,7 @@ void MultiLayer::finish()
   delete BGS;
 }
 
+// void MultiLayer::process(const cv::Mat &img_input, cv::Mat &img_output, cv::Mat &img_bgmodel, cv::Mat &img_input_merged)
 void MultiLayer::process(const cv::Mat &img_input, cv::Mat &img_output, cv::Mat &img_bgmodel)
 {
   init(img_input, img_output, img_bgmodel);
@@ -84,7 +85,8 @@ void MultiLayer::process(const cv::Mat &img_input, cv::Mat &img_output, cv::Mat 
     fg_prob_img = cvCreateImage(img_size, org_img->depth, 1);
     fg_mask_img = cvCreateImage(img_size, org_img->depth, 1);
     fg_prob_img3 = cvCreateImage(img_size, org_img->depth, org_img->nChannels);
-    merged_img = cvCreateImage(cvSize(img_size.width * 2, img_size.height * 2), org_img->depth, org_img->nChannels);
+    // merged_img = cvCreateImage(cvSize(img_size.width * 2, img_size.height * 2), org_img->depth, org_img->nChannels);
+    merged_img = cvCreateImage(cvSize(img_size.width * 2, img_size.height ), org_img->depth, org_img->nChannels);
 
     BGS = new CMultiLayerBGS();
     BGS->Init(img_size.width, img_size.height);
@@ -223,7 +225,8 @@ void MultiLayer::process(const cv::Mat &img_input, cv::Mat &img_output, cv::Mat 
   BGS->GetForegroundImage(fg_img);
   BGS->GetForegroundProbabilityImage(fg_prob_img3);
   BGS->GetForegroundMaskImage(fg_mask_img);
-  BGS->MergeImages(4, img, bg_img, fg_prob_img3, fg_img, merged_img);
+  // BGS->MergeImages(4, img, bg_img, fg_prob_img3, fg_img, merged_img);
+  BGS->MergeImages(2, img, fg_prob_img3, merged_img);
 
   img_merged = cv::cvarrToMat(merged_img);
   img_foreground = cv::cvarrToMat(fg_mask_img);
@@ -232,11 +235,15 @@ void MultiLayer::process(const cv::Mat &img_input, cv::Mat &img_output, cv::Mat 
 #ifndef MEX_COMPILE_FLAG
   if (showOutput)
   {
-    cv::imshow("MLBGS Layers", img_merged);
-    cv::imshow("MLBGS FG Mask", img_foreground);
+    // cv::namedWindow("MLBGS Layers", cv::WINDOW_NORMAL );
+    // cv::resizeWindow("MLBGS Layers",1200, 800);
+    // cv::namedWindow("MLBGS FG Mask", cv::WINDOW_NORMAL );
+    // cv::resizeWindow("MLBGS FG Mask",600, 800);
+    // cv::imshow("MLBGS Layers", img_merged);
+    // cv::imshow("MLBGS FG Mask", img_foreground);
   }
 #endif
-
+  // img_merged.copyTo(img_input_merged);
   img_foreground.copyTo(img_output);
   img_background.copyTo(img_bgmodel);
 

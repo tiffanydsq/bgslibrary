@@ -184,8 +184,8 @@ void CMultiLayerBGS::MergeImages(int num, ...) {
   switch (num) {
   case 1: nCols = nRows = 1;
     break;
-  case 2: nCols = 1;
-    nRows = 2;
+  case 2: nCols = 2;
+    nRows = 1;
     break;
   case 3:
   case 4: nCols = 2;

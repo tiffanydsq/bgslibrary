@@ -16,14 +16,16 @@ along with BGSLibrary.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <iostream>
 #include <opencv2/opencv.hpp>
-
+#include "opencv2/videoio.hpp"
 #include "package_bgs/bgslibrary.h"
+// using namespace cv;
 
 int main(int argc, char **argv)
 {
   std::cout << "Using OpenCV " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << "." << CV_SUBMINOR_VERSION << std::endl;
 
   VideoCapture capture;
+  
 
   if (argc > 1)
   {
@@ -39,10 +41,17 @@ int main(int argc, char **argv)
     return -1;
   }
 
+  
+  VideoWriter video_mask(argv[1]+string("_fg.avi"),
+    CV_FOURCC('M','J','P','G'), 
+    capture.get(CV_CAP_PROP_FPS), 
+    Size(capture.get(CV_CAP_PROP_FRAME_WIDTH),capture.get(CV_CAP_PROP_FRAME_HEIGHT))
+  );
+
   /* Background Subtraction Methods */
   IBGS *bgs;
 
-  bgs = new FrameDifference;
+  // bgs = new FrameDifference;
   //bgs = new StaticFrameDifference;
   //bgs = new WeightedMovingMean;
   //bgs = new WeightedMovingVariance;
@@ -66,7 +75,7 @@ int main(int argc, char **argv)
   //bgs = new T2FMRF_UV;
   //bgs = new FuzzySugenoIntegral;
   //bgs = new FuzzyChoquetIntegral;
-  //bgs = new MultiLayer;
+  bgs = new MultiLayer;
   //bgs = new PixelBasedAdaptiveSegmenter;
   //bgs = new LBSimpleGaussian;
   //bgs = new LBFuzzyGaussian;
@@ -85,23 +94,39 @@ int main(int argc, char **argv)
   //bgs = new TwoPoints;
   //bgs = new ViBe;
   //bgs = new CodeBook;
+  
+  // namedWindow("Input", WINDOW_NORMAL );
+  // resizeWindow("Input",600, 800);
+
+  // namedWindow("FG mask", cv::WINDOW_NORMAL );
+  // resizeWindow("FG mask",1200, 800);
 
   int key = 0;
   cv::Mat img_input;
+  int cnt=0;
   while (key != 'q')
   {
     capture >> img_input;
     if (img_input.empty()) break;
 
-    cv::imshow("input", img_input);
+    // cv::imshow("Input", img_input);
+    
 
     cv::Mat img_mask;
     cv::Mat img_bkgmodel;
-    bgs->process(img_input, img_mask, img_bkgmodel); // by default, it shows automatically the foreground mask image
 
+    bgs->process(img_input, img_mask, img_bkgmodel); // by default, it shows automatically the foreground mask image
     //if(!img_mask.empty())
-    //  cv::imshow("Foreground", img_mask);
-    //  do something
+    //  cv::imshow("FG mask", img_mask);
+
+    //  process 
+    cv::Mat mask;
+    cvtColor(img_mask, mask, cv::COLOR_GRAY2BGR);
+    video_mask<<mask;
+
+    cnt++;
+    if(!(cnt%50))
+      cout<<"Frame No."<<cnt<<endl;
 
     key = cvWaitKey(33);
   }

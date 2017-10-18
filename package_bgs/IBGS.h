@@ -34,6 +34,7 @@ namespace bgslibrary
 				setShowOutput(false);
 				cv::Mat _img_foreground;
 				cv::Mat _img_background;
+				// cv::Mat _img_input_merged;
 				process(img_input, _img_foreground, _img_background);
         _img_background.copyTo(img_background);
 				return _img_foreground;
