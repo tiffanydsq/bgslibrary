@@ -2,3 +2,7 @@
 *
 # Except these files
 !.gitignore
+!CMakeCache.txt
+!Makefile
+!cmake_install.cmake
+!libbgs.a
