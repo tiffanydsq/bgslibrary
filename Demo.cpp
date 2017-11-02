@@ -119,10 +119,16 @@ int main(int argc, char **argv)
     //if(!img_mask.empty())
     //  cv::imshow("FG mask", img_mask);
 
+    cv::Mat white;
+    findNonZero	(img_mask,white);
+    cout<< white.cols << "  " << white.rows << endl;
+
     //  process 
     cv::Mat mask;
     cvtColor(img_mask, mask, cv::COLOR_GRAY2BGR);
     video_mask<<mask;
+
+
 
     cnt++;
     if(!(cnt%50))
