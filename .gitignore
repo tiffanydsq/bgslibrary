@@ -1,5 +1,4 @@
 etc/
-build_*/
 dataset_*/
 binaries*/
 java_gui/dist/
