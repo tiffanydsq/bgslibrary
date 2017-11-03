@@ -45,10 +45,10 @@ int main(int argc, char **argv)
     // else // image
     // {
 
-    vector<String> file_names;
-    glob(argv[1], file_names);
+    vector<String> filenames;
+    glob(argv[1]+string("/*.jpg"), filenames);
 
-    if(!file_names.size()){
+    if(!filenames.size()){
         cout << "Empty folder / wrong path!" << endl;
         return -1;
     }    
@@ -56,13 +56,16 @@ int main(int argc, char **argv)
 
     string output_name=argv[2];
     cout<<"output_name: "<<output_name<<endl;
-    Mat frame=imread(file_names[0]);
+    Mat frame=imread(filenames[0]);
     VideoWriter video_mask(output_name,
         CV_FOURCC('M','J','P','G'), 
         5, 
         Size(frame.cols,frame.rows)
+        
     );
 
+
+    
     IBGS *bgs;
     bgs = new MultiLayer;
 
@@ -123,7 +126,7 @@ int main(int argc, char **argv)
     int cnt=0;
     // while (key != 'q')
     // {
-    for(string filename:file_names){
+    for(string filename:filenames){
         cv::Mat img_input;
         cv::Mat img_mask;
         cv::Mat img_bkgmodel;
